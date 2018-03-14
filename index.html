@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Terminator</title>
+    <link rel="stylesheet" href="main.css">
+    <script src="js/tracking-min.js"></script>
+    <script src="js/face-min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Terminator</div>
+        <div class="video-container">
+            <video src="" class="hidden grayscale"></video>
+            <canvas id="canvas" width="700" height="350"></canvas>
+            <div class="video-preloader hidden"></div>
+        </div>
+
+        <div class="contorls">
+            <div class="controls__button js-btn-start">Start</div>
+            <div class="controls__button  js-btn-pause">Stop</div>
+        </div>
+    </div>
+
+    <svg style="position:absolute;" width="1" height="1" viewBox="0 0 1 1"><!---1--->
+        <defs>
+            <filter id="myFilter4">
+                <feComponentTransfer>
+                    <feFuncR type="linear" slope="5" intercept="-0.5"></feFuncR>
+                    <feFuncG type="linear" slope="0.2"></feFuncG>
+                    <feFuncB type="linear" slope="0.2"></feFuncB>
+                    <feFuncA type="identity"></feFuncA>
+                </feComponentTransfer>
+            </filter>
+        </defs>
+    </svg>
+<script src="js/index.js"></script>
+</body>
+</html>

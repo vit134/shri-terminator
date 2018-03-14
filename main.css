@@ -1,0 +1,99 @@
+@font-face {
+	font-family: "terminator";
+	src: url("fonts/terminator_real_nfi.ttf") format("truetype");
+	font-style: normal;
+	font-weight: normal;
+}
+
+html,
+body {
+	font-family: "terminator";
+}
+
+.hidden {
+	display: none;
+}
+
+.container {
+	max-width: 90%;
+	margin: 0 auto;
+}
+
+.title {
+	text-align: center;
+	font-size: 24px;
+	margin-bottom: 20px;
+}
+
+.video-container {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 350px;
+}
+
+#canvas {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.video-preloader {
+	width: 30px;
+	height: 30px;
+	border-left: 3px solid red;
+	animation: preloader 1s infinite ease;
+}
+
+@keyframes preloader {
+	0%   {
+		transform: rotate(90deg);
+	}
+	25%  {
+		transform: rotate(180deg);
+	}
+	50%  {
+		transform: rotate(270deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+video,
+canvas{
+	width: 700px;
+	height: 350px;
+}
+
+
+.grayscale {
+	filter: url(#myFilter4);
+}
+.sepia {
+	+filter: sepia(1);
+}
+.blur {
+	+filter: blur(3px);
+}
+
+.contorls {
+	display: flex;
+	justify-content: center;
+	margin: 20px 0;
+}
+
+.controls__button {
+	margin-right: 20px;
+	padding: 5px 15px;
+	text-align: center;
+	border: 2px solid red;
+	cursor: pointer;
+}
+
+.controls__button:hover {
+	background: red;
+	color: #ffffff;
+	transition: All .1s ease;
+}
