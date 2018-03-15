@@ -20,28 +20,31 @@ body {
 .container {
 	max-width: 90%;
 	margin: 0 auto;
-	padding: 20px 0;
-	height: 100vh;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	//justify-content: space-between;
 	box-sizing: border-box;
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .title {
 	text-align: center;
 	font-size: 24px;
-	margin-bottom: 20px;
 }
 
 .video-container {
 	position: relative;
-	height: 100%;
-	display: flex;
 }
 
 #canvas {
 	position: absolute;
+	top: 0;
+	left: 0;
 }
 
 .video-preloader {
@@ -77,8 +80,10 @@ video {
 
 video,
 canvas{
-	width: 100%;
-	height: 100%;
+	//display: block;
+	width: 720px;
+	height: 540px;
+	margin: 0 auto;
 }
 
 
@@ -99,11 +104,16 @@ canvas{
 }
 
 .controls__button {
+	font-size: 13px;
 	margin-right: 20px;
 	padding: 5px 15px;
 	text-align: center;
 	border: 2px solid red;
 	cursor: pointer;
+}
+
+.controls__button:last-child {
+	margin-right: 0;
 }
 
 .controls__button:hover {
@@ -114,13 +124,11 @@ canvas{
 
 
 .video-interface {
-	font-family: 'arial';
 	position: absolute;
-	top: 40px;
-	bottom: 40px;
-	left: 40px;
+	top: 10px;
+	bottom: 30px;
+	left: 20px;
 	font-size: 14px;
-	background: red;
 }
 
 /*.video-interface > div,
@@ -139,11 +147,11 @@ canvas{
 	margin-bottom: 20px;
 }
 
-svg text {
 
+
+svg text {
 	fill: white;
-	font-family: 'Share Tech Mono', sans-serif;
-	font-size: 14px;
+	font-size: 12px;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }

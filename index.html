@@ -9,17 +9,25 @@
 </head>
 <body>
     <div class="container">
-        <div class="title">Terminator</div>
+        <div class="header">
+            <div class="title">Terminator</div>
+            <div class="contorls">
+                <div class="controls__button js-btn-start">Start</div>
+                <div class="controls__button  js-btn-pause">Stop</div>
+                <div class="controls__button  js-btn-face">Face detect</div>
+            </div>
+        </div>
         <div class="video-container">
-            <video src="" class="" loop></video>
-            <canvas id="canvas" width="700" height="350"></canvas>
+            <video src="" id="video" class="grayscale" loop></video>
+            <canvas id="canvas" width="720" height="540"></canvas>
+
             <audio src="ost.mp3" id="ost" ></audio>
             <audio src="shagi_po_zemle.mp3" id="shagi" ></audio>
+
             <div class="video-preloader hidden"></div>
             <div class="video-interface">
                 <div class="video-interface__faces">
-                    <svg version="1.1" id="js-faces-targets" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                         width="300px" height="600px" viewBox="0 0 300 600">
+                    <svg version="1.1" id="js-faces-targets" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="300px" height="150px" viewBox="0 0 300 150">
                         <defs>
                             <filter id="filter">
                                 <feFlood flood-color="transparent" result="black" />
@@ -83,15 +91,19 @@
                                 </feMerge>
                             </filter>
                         </defs>
+                        <g>
+                            <g id="digits" x="0" y="10">
+                                <g><text x="0" y="10">Digits</text></g>
+                            </g>
+                            <g id="face">
+                                <g><text x=""></text></g>
+                            </g>
+                        </g>
                         <!--<g><text x="0" y="10">Тут какойто много прям текста</text></g>
                         <g><text x="0" y="30">Тут какойто много прям текста</text></g>-->
                     </svg>
                 </div>
             </div>
-        </div>
-        <div class="contorls">
-            <div class="controls__button js-btn-start">Start</div>
-            <div class="controls__button  js-btn-pause">Stop</div>
         </div>
     </div>
     <svg style="position:absolute;" width="1" height="1" viewBox="0 0 1 1"><!---1--->
