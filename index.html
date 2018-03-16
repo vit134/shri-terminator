@@ -19,17 +19,18 @@
         </div>
         <div class="video-container">
             <div class="video-container__inner">
-                <video src="" id="video" poster="cover.jpg" class="grayscale" loop></video>
-                <div class="video-fallback">
+                <video src="" id="video" poster="cover.jpg" class="filterRed" loop></video>
+                <canvas id="c" width="720" height="540"></canvas>
+                <div class="video-fallback hidden">
                     <svg version="1.1" id="video-fallback" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="720px" height="300px" viewBox="0 0 720 300">
                         <text xml:space="preserve" id="svg_1" y="95" x="205" >I'll be back</text>
                         <text xml:space="preserve" id="svg_2" y="145" x="70" >but it is not exactly*</text>
                         <text xml:space="preserve" id="svg_3" y="400" x="20" >* It looks like you do not have a web camera, buy, find or steal it to enjoy viewing</text>
                     </svg>
                 </div>
-                <canvas id="canvas" width="720" height="540"></canvas>
+                <canvas id="canvas" class="filterRed" width="720" height="540"></canvas>
                 <div class="video-preloader hidden"></div>
-                <div class="video-interface">
+                <div class="video-interface hidden">
                     <svg version="1.1" id="js-faces-targets" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="300px" height="150px">
                         <defs>
                             <filter id="filter">
@@ -138,6 +139,7 @@
             </filter>
         </defs>
     </svg>
-<script src="js/index.js"></script>
+    <script src="js/glitch-canvas-browser.min.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>

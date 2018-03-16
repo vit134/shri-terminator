@@ -94,7 +94,7 @@ canvas{
 }
 
 
-.grayscale {
+.filterRed {
 	filter: url(#myFilter4);
 }
 .sepia {
@@ -117,6 +117,10 @@ canvas{
 	text-align: center;
 	border: 2px solid red;
 	cursor: pointer;
+}
+
+.controls__button.started {
+	border-color: green;
 }
 
 .controls__button:last-child {

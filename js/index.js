@@ -1,7 +1,9 @@
 var startBtn = document.querySelector('.js-btn-start'),
     pauseBtn = document.querySelector('.js-btn-pause'),
     faseBtn = document.querySelector('.js-btn-face'),
-    preloader = document.querySelector('.video-preloader');
+    preloader = document.querySelector('.video-preloader'),
+    interface = document.querySelector('.video-interface'),
+    fallBack = document.querySelector('.video-fallback');
 
 var video = document.querySelector('video'),
     canvas = document.getElementById('canvas'),
@@ -18,8 +20,6 @@ function init() {
     checkGetUserMedia();
     bindEvents();
     createAudio();
-    createInterface();
-    _startCapture()
 }
 
 function bindEvents() {
@@ -31,8 +31,9 @@ function bindEvents() {
             tracking.track('#video', tracker, {camera: true});
         } else {
             this.classList.remove('started');
-            tracker.removeAllListeners('track');
-            console.log(tracker, tracking);
+            tracker.removeListener('track', function (e) {
+                console.log(e);
+            });
         }
     });
 
@@ -86,17 +87,35 @@ function createInterface() {
 
         document.querySelector('#js-faces-targets').classList.add('noise');
 
-        requestAnimationFrame(function () {
-            document.querySelector('#digits').querySelectorAll('text').forEach(function (el) {
-                el.style.transform = 'translateY(-20px)';
-            })
-        })
+        start = start + 15;
 
-        var t = setTimeout(function () {
+        setTimeout(function () {
             document.querySelector('#js-faces-targets').classList.remove('noise');
-            generateStroke(limit, limit++, g[g.length -1].querySelector('text').getAttribute('y') + 15 );
+
+            requestAnimationFrame(function () {
+                document.querySelector('#digits').querySelectorAll('text').forEach(function (el) {
+                    el.style.transform = 'translateY(-' + start + 'px)';
+                })
+            })
+
+            generateStroke(limit + 1, limit + 1, parseInt(g[g.length -1].querySelector('text').getAttribute('y')) + 15);
+
+            g = document.querySelector('#digits').querySelectorAll('g');
+
+            g[g.length -1].querySelector('text').animate(
+                [
+                    { fill: 'red' },
+                    { fill: '#000', offset: 0.333},
+                    { fill: '#fff' }
+                ], {
+                    duration: 100,
+                    iterations: 6
+                }
+            );
+
+            limit++;
         }, 3000)
-    }, 10000)
+    }, 6000)
 }
 
 function generateStroke(start, limit, y) {
@@ -104,12 +123,10 @@ function generateStroke(start, limit, y) {
         var digits = svg.querySelector('#digits');
         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        
+        text.setAttribute('x', 0);
 
-
-
-        text.setAttribute('x', 0)
-
-        text.setAttribute('y', y)
+        text.setAttribute('y', y);
 
         text.textContent = i + ' - ' + makeRandomString();
 
@@ -148,10 +165,7 @@ function createAudio() {
 
         gainNodes[0].connect(destination);
         gainNodes[1].connect(destination);
-
-        console.log(sources[0]);
-        console.log(destination);
-
+        
         sources[0].start(0);
         sources[1].start(0);
     }
@@ -189,7 +203,12 @@ function _videoOnCanPlay() {
 function _videOnLoad() {
     console.log('onload');
     video.play();
-    //draw(video, context);
+    draw(video, context);
+    
+    setTimeout(function () {
+        console.log(123);
+        toImage()
+    }, 3000)
 }
 
 function _startCapture() {
@@ -199,6 +218,7 @@ function _startCapture() {
         navigator.mediaDevices.getUserMedia({audio: true, video: true})
             .then(function(mediaStream) {
                 video.srcObject = mediaStream;
+                interface.classList.remove('hidden');
                 createInterface();
                 video.onloadedmetadata = function(e) {
                     video.play();
@@ -208,7 +228,7 @@ function _startCapture() {
             .catch(function(err) {
                 console.log(err);
                 console.log(err.name + ": " + err.message);
-                videoFallBack();
+                fallBack.classList.remove('hidden')
             });
     } else {
         console.log("getUserMedia not supported");
@@ -228,10 +248,45 @@ function _pauseCapture() {
 }
 
 function draw(video) {
-    context.drawImage(video, 0, 0, 700, 350);
+    context.drawImage(video, 0, 0, 720, 540);
     requestAnimationFrame(() => {
         draw(video);
 });
+}
+
+function toImage() {
+    var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+    var drawImageData = function(imageData) {
+        console.log(123);
+        context.putImageData(imageData, 0, 0);
+    }
+
+    /*var parameters = { amount: 1, seed: Math.round(Math.random()*100), iterations: 50, quality: 10 };
+    glitch(imgData, parameters, function(imageData) {
+        // update the canvas' image data
+        context.putImageData(imageData, 0, 0);
+    });*/
+
+    var ii = 0;
+    var interval_id;
+
+    clearInterval(interval_id);
+
+    interval_id = setInterval(function() {
+        var parameters = { amount: 1, seed: Math.round(Math.random()*100), iterations: 5, quality: 30 };
+
+        if (ii < 10) {
+            console.log(ii);
+            glitch(imageData, parameters, drawImageData);
+            ii++;
+        } else {
+            clearInterval(interval_id);
+            context.drawImage(video, 0, 0, 720, 540);
+        }
+    },  40);
+
+    //context.putImageData(imgData,0,0);
 }
 
 function checkGetUserMedia() {
