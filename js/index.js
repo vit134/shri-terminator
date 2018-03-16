@@ -7,10 +7,7 @@ var video = document.querySelector('video'),
     canvas = document.getElementById('canvas'),
     context = canvas.getContext('2d');
 
-var svg = document.querySelector('#js-faces-targets')
-
-var ostAudio = document.querySelector('#ost'),
-    shagiAudio = document.querySelector('#ost');
+var svg = document.querySelector('#js-faces-targets');
 
 var tracker = new tracking.ObjectTracker("face");
     tracker.setInitialScale(4);
@@ -21,7 +18,7 @@ function init() {
     checkGetUserMedia();
     bindEvents();
     createAudio();
-
+    createInterface();
     _startCapture()
 }
 
@@ -79,10 +76,16 @@ function bindEvents() {
 }
 
 function createInterface() {
-    generateStroke();
+    generateStroke(0, 7);
 
     setInterval(function () {
         document.querySelector('#js-faces-targets').classList.add('noise');
+
+        /*requestAnimationFrame(function () {
+            document.querySelector('#digits').querySelectorAll('text').forEach(function (el) {
+                el.style.transform = 'translateY(-20px)';
+            })
+        })*/
 
         var t = setTimeout(function () {
             document.querySelector('#js-faces-targets').classList.remove('noise');
@@ -90,15 +93,17 @@ function createInterface() {
     }, 10000)
 }
 
-function generateStroke() {
-    for (let i = 0; i <= 10; i++) {
+function generateStroke(start, limit) {
+    for (let i = start; i <= limit; i++) {
         var digits = svg.querySelector('#digits');
         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 
+        startY = 13;
+
         text.setAttribute('x', 0)
 
-        text.setAttribute('y', i * 20)
+        text.setAttribute('y', startY * i * 1.3)
 
         text.textContent = i + ' - ' + makeRandomString();
 
@@ -170,7 +175,6 @@ function createAudio() {
 }
 
 function _videoOnCanPlay() {
-    preloader.classList.add('hidden');
     video.classList.remove('hidden');
 }
 
@@ -188,7 +192,6 @@ function _startCapture() {
             .then(function(mediaStream) {
                 video.srcObject = mediaStream;
                 createInterface();
-
                 video.onloadedmetadata = function(e) {
                     video.play();
 
@@ -202,11 +205,14 @@ function _startCapture() {
     } else {
         console.log("getUserMedia not supported");
     }
+
+    preloader.classList.add('hidden');
+
 }
 
 function videoFallBack() {
-    video.src = 'fallback-video.mp4';
-    video.load();
+    /*video.poster = 'cover.jpg';
+    video.load();*/
 }
 
 function _pauseCapture() {
