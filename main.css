@@ -142,6 +142,10 @@ canvas{
 	height: 100%;
 }
 
+#face g {
+	transition: All .3s ease;
+}
+
 /*.video-interface > div,
 .video-interface svg {
 	height: 100%;

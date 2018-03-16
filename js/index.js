@@ -76,40 +76,48 @@ function bindEvents() {
 }
 
 function createInterface() {
-    generateStroke(0, 7);
+    var start = 0,
+        limit = 7;
+
+    generateStroke(start, limit, 13);
 
     setInterval(function () {
+        var g = document.querySelector('#digits').querySelectorAll('g');
+
         document.querySelector('#js-faces-targets').classList.add('noise');
 
-        /*requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
             document.querySelector('#digits').querySelectorAll('text').forEach(function (el) {
                 el.style.transform = 'translateY(-20px)';
             })
-        })*/
+        })
 
         var t = setTimeout(function () {
             document.querySelector('#js-faces-targets').classList.remove('noise');
+            generateStroke(limit, limit++, g[g.length -1].querySelector('text').getAttribute('y') + 15 );
         }, 3000)
     }, 10000)
 }
 
-function generateStroke(start, limit) {
+function generateStroke(start, limit, y) {
     for (let i = start; i <= limit; i++) {
         var digits = svg.querySelector('#digits');
         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 
-        startY = 13;
+
 
         text.setAttribute('x', 0)
 
-        text.setAttribute('y', startY * i * 1.3)
+        text.setAttribute('y', y)
 
         text.textContent = i + ' - ' + makeRandomString();
 
         g.appendChild(text);
 
         digits.appendChild(g)
+
+        y += 15;
     }
 }
 
