@@ -34,7 +34,7 @@ function bindEvents() {
             tracking.track('#video', tracker, {camera: true});
         } else {
             this.classList.remove('started');
-            //tracking.removeAllListeners(tracker);
+            tracker.removeAllListeners('track');
             console.log(tracker, tracking);
         }
     });
