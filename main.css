@@ -14,7 +14,7 @@ body {
 
 
 .hidden {
-	display: none;
+	display: none !important;
 }
 
 .container {
@@ -48,10 +48,23 @@ body {
 	margin: 0 auto;
 }
 
-#canvas {
+canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
+}
+
+#noise {
+	z-index: 999;
+}
+
+#audio {
+	top: auto;
+	bottom: 20px;
+	left: 20px;
+	width: 300px;
+	height: 150px;
+	z-index: 999999;
 }
 
 .video-preloader {
@@ -203,4 +216,47 @@ svg.noise text {
 .video-fallback svg text#svg_3 {
 	font-size: 13px;
 	font-family: arial;
+}
+
+.popup {
+	position: fixed;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 9999999;
+	background: #222;
+	color: red;
+	background-image: url('poup-image.jpg');
+	background-size: 20%;
+	background-blend-mode: color-dodge;
+}
+
+.popup__title {
+	font-size: 13px;
+	margin: 0 0 30px 0;
+	text-align: center;
+}
+
+.popup__subtitle {
+	font-size: 60px;
+	margin:0 0 30px 0;
+	mix-blend-mode: screen;
+}
+
+.popup__button {
+	padding: 20px 40px;
+	border: 2px solid red;
+	color: red;
+	cursor: pointer;
+}
+
+.popup__button:hover {
+	background: red;
+	color: #fff;
+	border-color: #fff;
 }

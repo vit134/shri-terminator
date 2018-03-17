@@ -1,6 +1,8 @@
 var startBtn = document.querySelector('.js-btn-start'),
     pauseBtn = document.querySelector('.js-btn-pause'),
     faseBtn = document.querySelector('.js-btn-face'),
+    popupBtn = document.querySelector('.popup__button'),
+    popup= document.querySelector('.popup'),
     preloader = document.querySelector('.video-preloader'),
     interface = document.querySelector('.video-interface'),
     fallBack = document.querySelector('.video-fallback');
@@ -19,13 +21,13 @@ var tracker = new tracking.ObjectTracker("face");
 function init() {
     checkGetUserMedia();
     bindEvents();
-    createAudio();
 }
 
 function bindEvents() {
     startBtn.addEventListener('click', _startCapture);
     pauseBtn.addEventListener('click', _pauseCapture);
-    faseBtn.addEventListener('click', function () {
+    /*faseBtn.addEventListener('click', function () {
+        console.log(this);
         if (!this.classList.contains('started')) {
             this.classList.add('started');
             tracking.track('#video', tracker, {camera: true});
@@ -35,10 +37,15 @@ function bindEvents() {
                 console.log(e);
             });
         }
-    });
+    });*/
 
     video.addEventListener('canplay', _videoOnCanPlay);
     video.addEventListener('canplaythrough', _videOnLoad);
+
+    popupBtn.addEventListener('click', function () {
+        _startCapture();
+        popup.classList.add('hidden');
+    });
 
     tracker.on('track', function(event) {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -138,62 +145,114 @@ function generateStroke(start, limit, y) {
     }
 }
 
-function createAudio() {
-    var context = new window.AudioContext();
-    var buffers = [], sources=[], destination;
+function createAudio(mediaStream) {
+    var audioCanvas = document.getElementById('audio'),
+        audioCanvasContext = audioCanvas.getContext('2d');
 
-    var stop = function(index){
-        sources[0].stop(0);
-        sources[1].stop(1);
-    }
+    var WIDTH = audioCanvas.width,
+        HEIGHT = audioCanvas.height;
 
-    var play = function(index){
-        sources = [context.createBufferSource(), context.createBufferSource()];
+    var AudioContext = window.AudioContext || window.webkitAudioContext;
+    var ctxAudio = new AudioContext();
+    var source = ctxAudio.createMediaStreamSource(mediaStream);
+    var analyser = ctxAudio.createAnalyser();
+    var processor = ctxAudio.createScriptProcessor(2048, 1, 1);
 
-        sources[0].buffer = buffers[0];
-        sources[1].buffer = buffers[1];
+    source.connect(analyser);
+    source.connect(processor);
+    processor.connect(ctxAudio.destination);
+    analyser.fftSize = 128;
 
-        destination = context.destination;
 
-        gainNodes = [context.createGain(),context.createGain()];
+    var bufferLength = analyser.frequencyBinCount;
+    var data = new Uint8Array(bufferLength);
 
-        gainNodes[0].gain.value  = 10;
-        gainNodes[1].gain.value  = 5;
+    processor.onaudioprocess = function (){
+        analyser.getByteFrequencyData(data);
 
-        sources[0].connect(gainNodes[0]);
-        sources[1].connect(gainNodes[1]);
+        var maxValue = Math.max(...data),
+        pieceCount = 24,
+            delimiterCount = pieceCount - 1,
+            delimiterWidth = 5,
+            pieceWidth = (WIDTH - (delimiterCount * delimiterWidth)) / pieceCount;
 
-        gainNodes[0].connect(destination);
-        gainNodes[1].connect(destination);
-        
-        sources[0].start(0);
-        sources[1].start(0);
-    }
+        var matrix = [
+            {
+                max: 3,
+                from: 0,
+                to: 8,
+                name: 'quiet',
+                color: {
+                    r: 0,
+                    g: 71,
+                    b: 13
+                }
+            },
+            {
+                max: 7,
+                from: 8,
+                to: 16,
+                name: 'medium',
+                color: {
+                    r: 230,
+                    g: 96,
+                    b: 14
+                }
+            },
+            {
+                max: 10,
+                from: 16,
+                to: 100,
+                name: 'loud',
+                color: {
+                    r: 255,
+                    g: 0,
+                    b: 0
+                }
+            }
+        ];
 
-    var initSound = function(arrayBuffer, bufferIndex) {
-        context.decodeAudioData(arrayBuffer, function(decodedArrayBuffer) {
-            buffers[bufferIndex] = decodedArrayBuffer;
-            if(buffers[0] && buffers[1]) document.querySelector('body').classList.add('readytoplay');
-        }, function(e) {
-            console.log('Error decoding file', e);
+        var maxPiece = maxValue / pieceWidth,
+            wholePieces = Math.floor(maxPiece),
+            remainderPiece = maxValue % pieceWidth;
+
+        requestAnimationFrame(function () {
+            audioCanvasContext.clearRect(0, 0, WIDTH, HEIGHT);
+
+            var barHeight;
+            var x = 0;
+
+            for (var i = 0; i < bufferLength; i++) {
+                barHeight = data[i];
+
+                audioCanvasContext.fillStyle = 'rgb(' + (barHeight +  100) + ', 50, 50)';
+                audioCanvasContext.fillRect(x,HEIGHT - 25 - barHeight / 2,pieceWidth,barHeight / 2);
+
+                x += pieceWidth + 5;
+            }
+
+            for (let i = 0; i < wholePieces; i++) {
+
+                let fillColor = 'yellow';
+
+                matrix.forEach(function (interval) {
+                    if (wholePieces >= interval.from && wholePieces <= interval.to) {
+                        fillColor = 'rgb(' + interval.color.r + ',' + interval.color.g + ',' + interval.color.b + ')';
+                    }
+                })
+
+                audioCanvasContext.fillStyle = fillColor;
+
+                audioCanvasContext.fillRect(i * (pieceWidth + delimiterWidth), HEIGHT - 20, pieceWidth, 20);
+            }
+
+
         });
     }
+}
 
-    var loadSoundFile = function(url, bufferIndex) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.responseType = 'arraybuffer';
-        xhr.onload = function(e) {
-            initSound(this.response, bufferIndex); // this.response is an ArrayBuffer.
-        };
-        xhr.send();
-    }
+function _onOffFaceDetect() {
 
-    loadSoundFile('ost.mp3',0);
-    loadSoundFile('shagi_po_zemle.mp3',1);
-
-
-    play();
 }
 
 function _videoOnCanPlay() {
@@ -204,11 +263,12 @@ function _videOnLoad() {
     console.log('onload');
     video.play();
     draw(video, context);
-    
-    setTimeout(function () {
-        console.log(123);
-        toImage()
-    }, 3000)
+
+    var timerId = setTimeout(function tick() {
+        toImage();
+
+        timerId = setTimeout(tick, 10000);
+    }, 10000);
 }
 
 function _startCapture() {
@@ -219,14 +279,18 @@ function _startCapture() {
             .then(function(mediaStream) {
                 video.srcObject = mediaStream;
                 interface.classList.remove('hidden');
+
                 createInterface();
+
                 video.onloadedmetadata = function(e) {
                     video.play();
-
+                    video.muted = true;
                 };
+
+                createAudio(mediaStream);
+
             })
             .catch(function(err) {
-                console.log(err);
                 console.log(err.name + ": " + err.message);
                 fallBack.classList.remove('hidden')
             });
@@ -236,11 +300,6 @@ function _startCapture() {
 
     preloader.classList.add('hidden');
 
-}
-
-function videoFallBack() {
-    /*video.poster = 'cover.jpg';
-    video.load();*/
 }
 
 function _pauseCapture() {
@@ -255,38 +314,30 @@ function draw(video) {
 }
 
 function toImage() {
-    var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    var noiseCanvas = document.getElementById('noise'),
+        noiseContext = noiseCanvas.getContext('2d'),
+        imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 
     var drawImageData = function(imageData) {
-        console.log(123);
-        context.putImageData(imageData, 0, 0);
-    }
+        noiseContext.putImageData(imageData, 0, 0);
+    };
 
-    /*var parameters = { amount: 1, seed: Math.round(Math.random()*100), iterations: 50, quality: 10 };
-    glitch(imgData, parameters, function(imageData) {
-        // update the canvas' image data
-        context.putImageData(imageData, 0, 0);
-    });*/
+    noiseCanvas.classList.remove('hidden');
 
-    var ii = 0;
-    var interval_id;
+    var glitchInterval = 0;
 
-    clearInterval(interval_id);
-
-    interval_id = setInterval(function() {
+    var interval_id = setInterval(function() {
         var parameters = { amount: 1, seed: Math.round(Math.random()*100), iterations: 5, quality: 30 };
 
-        if (ii < 10) {
-            console.log(ii);
+        if (glitchInterval < 10) {
             glitch(imageData, parameters, drawImageData);
-            ii++;
+            glitchInterval++;
         } else {
+            noiseCanvas.classList.add('hidden');
             clearInterval(interval_id);
             context.drawImage(video, 0, 0, 720, 540);
         }
     },  40);
-
-    //context.putImageData(imgData,0,0);
 }
 
 function checkGetUserMedia() {
