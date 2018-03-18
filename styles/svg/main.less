@@ -1,0 +1,14 @@
+svg {
+    & text {
+        fill: white;
+        font-size: 12px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    &.noise {
+        & text {
+            filter: url(#filter);
+        }
+    }
+}

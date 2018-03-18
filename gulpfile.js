@@ -1,7 +1,8 @@
 /*eslint no-console: 0*/
 'use strict'
 
-var gulp = require('gulp'),
+const gulp = require('gulp'),
+    babel = require('gulp-babel'),
     uglify = require('gulp-uglify'),
     concat = require('gulp-concat'),
     rename = require('gulp-rename'),
@@ -10,21 +11,25 @@ var gulp = require('gulp'),
     watch = require('gulp-watch'),
     prefixer = require('gulp-autoprefixer');
 
-var path = {
+const path = {
     build: {
-        styles: 'styles/build',
-        scripts: 'scripts/build'
+        styles: 'dist/styles/',
+        scripts: 'dist/scripts/'
     },
     dev: {
-        styles: 'styles/*.less',
-        js: 'js/main.js',
+        globalStyles: 'styles/global.less',
+        styles: 'styles/*/*.less',
+        js: 'scripts/main.js'
     }
 
 }
 
 gulp.task('styles', function () {
-    return gulp.src([path.dev.styles])
-        .pipe(concat('main.less'))
+    return gulp.src([
+            path.dev.globalStyles,
+            path.dev.styles
+        ])
+        .pipe(concat('__main.less'))
         .pipe(less())
         .pipe(prefixer())
         .on('error', console.log)
@@ -39,6 +44,9 @@ gulp.task('scripts', function () {
     return gulp.src([path.dev.js])
         .pipe(concat('__main.js'))
         .pipe(gulp.dest(path.build.scripts))
+        .pipe(babel({
+            presets: ['@babel/env']
+        }))
         .pipe(uglify().on('error', function (e) {
             console.log(e);
         }))
@@ -49,7 +57,11 @@ gulp.task('scripts', function () {
 gulp.task('build', ['scripts', 'styles'], function () {});
 
 gulp.task('watch', function () {
-    watch([path.dev.js, path.dev.less], function (event, cb) {
+    watch([
+        path.dev.globalStyles,
+        path.dev.styles,
+        path.dev.js
+    ], function (event, cb) {
         gulp.start('build');
     });
 });
