@@ -21,28 +21,6 @@ body {
   background: rgba(0, 255, 57, 0.64);
   z-index: 9999999999999999;
 }
-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 720px;
-  height: 540px;
-}
-canvas#noise {
-  z-index: 999;
-}
-canvas#audio {
-  top: auto;
-  bottom: 20px;
-  left: 20px;
-  width: 300px;
-  height: 150px;
-  z-index: 999999;
-}
-canvas.filterRed {
-  -webkit-filter: url(#myFilter4);
-          filter: url(#myFilter4);
-}
 .controls {
   display: -ms-flexbox;
   display: flex;
@@ -67,6 +45,28 @@ canvas.filterRed {
   background: red;
   color: #ffffff;
   transition: All .1s ease;
+}
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 720px;
+  height: 540px;
+}
+canvas#noise {
+  z-index: 999;
+}
+canvas#audio {
+  top: auto;
+  bottom: 20px;
+  left: 20px;
+  width: 300px;
+  height: 150px;
+  z-index: 999999;
+}
+canvas.filterRed {
+  -webkit-filter: url(#myFilter4);
+          filter: url(#myFilter4);
 }
 .header {
   display: -ms-flexbox;

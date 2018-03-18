@@ -1,5 +1,4 @@
-var faseBtn = document.querySelector('.controls__button_face-detect'),
-    motionBtn = document.querySelector('.controls__button_motion-detect'),
+var motionBtn = document.querySelector('.controls__button_motion-detect'),
     popupBtn = document.querySelector('.popup__button'),
     popup= document.querySelector('.popup'),
     videoInterface = document.querySelector('.video-interface'),
@@ -32,11 +31,6 @@ function bindEvents() {
             face.classList.add('hidden');
         }
 
-    });
-
-    faseBtn.addEventListener('click', function () {
-        console.log(123);
-        Motion.stop();
     });
 
     video.addEventListener('canplay', _videoOnCanPlay);

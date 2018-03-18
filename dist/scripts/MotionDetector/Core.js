@@ -87,9 +87,7 @@
 
 
 		function main() {
-		    console.log(stopped);
-		    
-		    if (!stopped) {
+			if (!stopped) {
                 try {
                     render();
                 } catch (e) {
