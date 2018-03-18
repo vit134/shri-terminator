@@ -9,14 +9,11 @@ var video = document.querySelector('video'),
     canvas = document.getElementById('canvas'),
     context = canvas.getContext('2d');
 
+var Motion = new MotionDetector.Core();
+
 var svg = document.querySelector('#js-faces-targets');
+var face = document.getElementById('face');
 
-var tracker = new tracking.ObjectTracker("face");
-    tracker.setInitialScale(4);
-    tracker.setStepSize(2);
-    tracker.setEdgesDensity(0.1);
-
-var motionDetect = false;
 
 function init() {
     checkGetUserMedia();
@@ -24,71 +21,29 @@ function init() {
 }
 
 function bindEvents() {
-    /*faseBtn.addEventListener('click', function () {
-        console.log(this);
-        if (!this.classList.contains('started')) {
-            this.classList.add('started');
-            tracking.track('#video', tracker, {camera: true});
-        } else {
-            this.classList.remove('started');
-            tracker.removeListener('track', function (e) {
-                console.log(e);
-            });
-        }
-    });*/
-
     motionBtn.addEventListener('click', function () {
-        console.log(this);
         if (!this.classList.contains('started')) {
-            this.classList.add('started');
-            motionDetect = true;
+            this.classList.add('started')
+            Motion.start();
+            face.classList.remove('hidden');
         } else {
-            this.classList.remove('started');
-            motionDetect = false;
+            this.classList.remove('started')
+            Motion.stop();
+            face.classList.add('hidden');
         }
+
+    });
+
+    faseBtn.addEventListener('click', function () {
+        console.log(123);
+        Motion.stop();
     });
 
     video.addEventListener('canplay', _videoOnCanPlay);
     video.addEventListener('canplaythrough', _videOnLoad);
 
-    popupBtn.addEventListener('click', function () {
-        _startCapture();
-    });
+    popupBtn.addEventListener('click', _startCapture);
 
-    tracker.on('track', function(event) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (event.data) {
-            event.data.forEach(function(rect) {
-                /*console.log(rect.x);
-                console.log(rect.y);*/
-                context.strokeStyle = 'white';
-                context.strokeRect(rect.x, rect.y, rect.width, rect.height);
-                context.font = '11px Helvetica';
-                context.fillStyle = "#fff";
-                //context.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
-                //context.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
-                context.fillText('x: ' + rect.x + 'px', 60, 20);
-                context.fillText('y: ' + rect.y + 'px', 60, 40);
-
-                var face = svg.querySelector('#face');
-
-                var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-                var textX = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                var textY = document.createElementNS("http://www.w3.org/2000/svg", "text");
-
-                /*text.setAttribute('x', 0)
-
-                text.setAttribute('y', i * 20)
-
-                text.textContent = i + ' - ' + makeRandomString();
-
-                g.appendChild(text);
-
-                digits.appendChild(g)*/
-            });
-        }
-    });
 }
 
 function createInterface() {
@@ -179,7 +134,7 @@ function createAudio(mediaStream) {
         analyser.getByteFrequencyData(data);
 
         var maxValue = Math.max(...data),
-            pieceCount = 24,
+        pieceCount = 24,
             delimiterCount = pieceCount - 1,
             delimiterWidth = 5,
             pieceWidth = (WIDTH - (delimiterCount * delimiterWidth)) / pieceCount;
@@ -266,8 +221,9 @@ function _videoOnCanPlay() {
 function _videOnLoad() {
     video.play();
     draw(video, context);
+
     popup.classList.add('hidden');
-    
+
     var timerId = setTimeout(function tick() {
         toImage();
         timerId = setTimeout(tick, 10000);
@@ -300,20 +256,15 @@ function _startCapture() {
     }
 }
 
-function _pauseCapture() {
-    video.pause();
-}
-
 function draw(video) {
     context.drawImage(video, 0, 0, 720, 540);
-    
-    requestAnimationFrame(() => {
-        draw(video);
 
-        if (motionDetect) {
-            console.log(context.getImageData(0, 0, canvas.width, canvas.height));
-        }
-});
+    requestAnimationFrame(function () {
+        draw(video);
+    });
+
+    return canvas;
+
 }
 
 function toImage() {
@@ -375,6 +326,7 @@ function makeRandomString() {
     return textArr.join(' ');
 }
 
+var ca = 0;
 
 
 init();
