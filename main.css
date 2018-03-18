@@ -30,6 +30,7 @@ body {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	padding: 20px 0;
 }
 
 .title {
@@ -110,17 +111,10 @@ canvas{
 .filterRed {
 	filter: url(#myFilter4);
 }
-.sepia {
-	+filter: sepia(1);
-}
-.blur {
-	+filter: blur(3px);
-}
 
 .contorls {
 	display: flex;
 	justify-content: center;
-	margin: 20px 0;
 }
 
 .controls__button {

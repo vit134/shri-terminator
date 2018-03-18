@@ -18,6 +18,8 @@ var tracker = new tracking.ObjectTracker("face");
     tracker.setStepSize(2);
     tracker.setEdgesDensity(0.1);
 
+var motionDetect = false;
+
 function init() {
     checkGetUserMedia();
     bindEvents();
@@ -39,12 +41,22 @@ function bindEvents() {
         }
     });*/
 
+    faseBtn.addEventListener('click', function () {
+        console.log(this);
+        if (!this.classList.contains('started')) {
+            this.classList.add('started');
+            motionDetect = true;
+        } else {
+            this.classList.remove('started');
+            motionDetect = false;
+        }
+    });
+
     video.addEventListener('canplay', _videoOnCanPlay);
     video.addEventListener('canplaythrough', _videOnLoad);
 
     popupBtn.addEventListener('click', function () {
         _startCapture();
-        popup.classList.add('hidden');
     });
 
     tracker.on('track', function(event) {
@@ -130,7 +142,7 @@ function generateStroke(start, limit, y) {
         var digits = svg.querySelector('#digits');
         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        
+
         text.setAttribute('x', 0);
 
         text.setAttribute('y', y);
@@ -171,7 +183,7 @@ function createAudio(mediaStream) {
         analyser.getByteFrequencyData(data);
 
         var maxValue = Math.max(...data),
-        pieceCount = 24,
+            pieceCount = 24,
             delimiterCount = pieceCount - 1,
             delimiterWidth = 5,
             pieceWidth = (WIDTH - (delimiterCount * delimiterWidth)) / pieceCount;
@@ -180,7 +192,7 @@ function createAudio(mediaStream) {
             {
                 max: 3,
                 from: 0,
-                to: 8,
+                to: 12,
                 name: 'quiet',
                 color: {
                     r: 0,
@@ -190,8 +202,8 @@ function createAudio(mediaStream) {
             },
             {
                 max: 7,
-                from: 8,
-                to: 16,
+                from: 12,
+                to: 20,
                 name: 'medium',
                 color: {
                     r: 230,
@@ -201,7 +213,7 @@ function createAudio(mediaStream) {
             },
             {
                 max: 10,
-                from: 16,
+                from: 20,
                 to: 100,
                 name: 'loud',
                 color: {
@@ -261,9 +273,11 @@ function _videoOnCanPlay() {
 
 function _videOnLoad() {
     console.log('onload');
+
     video.play();
     draw(video, context);
-
+    popup.classList.add('hidden');
+    
     var timerId = setTimeout(function tick() {
         toImage();
 
@@ -308,8 +322,13 @@ function _pauseCapture() {
 
 function draw(video) {
     context.drawImage(video, 0, 0, 720, 540);
+    
     requestAnimationFrame(() => {
         draw(video);
+
+        if (motionDetect) {
+            console.log(context.getImageData(0, 0, canvas.width, canvas.height));
+        }
 });
 }
 
@@ -327,7 +346,7 @@ function toImage() {
     var glitchInterval = 0;
 
     var interval_id = setInterval(function() {
-        var parameters = { amount: 1, seed: Math.round(Math.random()*100), iterations: 5, quality: 30 };
+        var parameters = { amount: 1, seed: Math.round(Math.random()*1000), iterations: 5, quality: 30 };
 
         if (glitchInterval < 10) {
             glitch(imageData, parameters, drawImageData);
@@ -371,6 +390,7 @@ function makeRandomString() {
 
     return textArr.join(' ');
 }
+
 
 
 init();
