@@ -9,14 +9,14 @@
     <header class="header">
         <div class="header__title">Terminator</div>
         <div class="controls">
-            <div class="controls__button controls__button_face-detect">Face detect</div>
             <div class="controls__button  controls__button_motion-detect">Motion detect</div>
         </div>
     </header>
     <main class="main">
         <div class="video-container">
             <div class="video-container__inner">
-                <video src="" id="video" poster="images/cover.jpg" class="filterRed" loop muted></video>
+                <video src="" id="video" poster="images/cover.jpg" class="filterRed" loop muted width="720" height="540"></video>
+                <div id="movement"></div>
                 <canvas id="noise" width="720" height="540"></canvas>
                 <canvas id="canvas" class="filterRed" width="720" height="540"></canvas>
                 <canvas id="audio" class="" width="300" height="150"></canvas>
@@ -96,7 +96,7 @@
                             <svg id="digits" x="0" y="20"></svg>
                         </svg>
                         <svg x="0" y="150">
-                            <g id="face">
+                            <g id="face" class="hidden">
                                 <!--<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
                                     <g>
                                         <g>
@@ -114,10 +114,12 @@
                                         <ellipse ry="59" rx="59" id="svg_24" cy="150" cx="150" stroke-width="9.5" stroke="#ffffff" fill="none"/>
                                     </g>
                                 </svg>-->
-                                <svg x="0" y="20" class="hidden">
-                                    <text x="0" y="13">---Face Detected</text>
-                                    <text x="0" y="28">x: 150</text>
-                                    <text x="0" y="43">y: 150</text>
+                                <svg x="0" y="20" class="">
+                                    <text x="0" y="13">---Motion Detected</text>
+                                    <text x="0" y="28">x:</text>
+                                    <text x="0" y="43" id="f_x"></text>
+                                    <text x="0" y="58">y:</text>
+                                    <text x="0" y="73" id="f_y"></text>
                                 </svg>
                             </g>
                         </svg>
@@ -146,6 +148,12 @@
     <script src="dist/scripts/tracking-min.js"></script>
     <script src="dist/scripts/face-min.js"></script>
     <script src="dist/scripts/glitch-canvas-browser.min.js"></script>
+
+    <script type="text/javascript" src="dist/scripts/motion-global.js"></script>
+    <script type="text/javascript" src="dist/scripts/MotionDetector/WebCamCapture.js"></script>
+    <script type="text/javascript" src="dist/scripts/MotionDetector/ImageCompare.js"></script>
+    <script type="text/javascript" src="dist/scripts/MotionDetector/Core.js"></script>
+
     <script src="dist/scripts/__main.js"></script>
 </body>
 </html>
