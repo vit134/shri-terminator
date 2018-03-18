@@ -3,23 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Terminator</title>
-    <link rel="stylesheet" href="main.css">
-    <script src="js/tracking-min.js"></script>
-    <script src="js/face-min.js"></script>
+    <link rel="stylesheet" href="dist/styles/_main.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="title">Terminator</div>
-            <div class="contorls">
-                <div class="controls__button js-btn-start">Start</div>
-                <div class="controls__button  js-btn-pause">Stop</div>
-                <div class="controls__button  js-btn-face">Face detect</div>
-            </div>
+    <header class="header">
+        <div class="header__title">Terminator</div>
+        <div class="controls">
+            <div class="controls__button controls__button_face-detect">Face detect</div>
+            <div class="controls__button  controls__button_motion-detect">Motion detect</div>
         </div>
+    </header>
+    <main class="main">
         <div class="video-container">
             <div class="video-container__inner">
-                <video src="" id="video" poster="cover.jpg" class="filterRed" loop muted></video>
+                <video src="" id="video" poster="images/cover.jpg" class="filterRed" loop muted></video>
                 <canvas id="noise" width="720" height="540"></canvas>
                 <canvas id="canvas" class="filterRed" width="720" height="540"></canvas>
                 <canvas id="audio" class="" width="300" height="150"></canvas>
@@ -128,7 +125,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
     <div class="popup">
         <h1 class="popup__title">I want to see you face</h1>
         <h2 class="popup__subtitle">Trust me!</h2>
@@ -146,8 +143,9 @@
             </filter>
         </defs>
     </svg>
-    <script src="js/glitch-canvas-browser.min.js"></script>
-    <script src="js/audio.js"></script>
-    <script src="js/index.js"></script>
+    <script src="dist/scripts/tracking-min.js"></script>
+    <script src="dist/scripts/face-min.js"></script>
+    <script src="dist/scripts/glitch-canvas-browser.min.js"></script>
+    <script src="dist/scripts/__main.js"></script>
 </body>
 </html>

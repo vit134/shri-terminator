@@ -1,10 +1,8 @@
-var startBtn = document.querySelector('.js-btn-start'),
-    pauseBtn = document.querySelector('.js-btn-pause'),
-    faseBtn = document.querySelector('.js-btn-face'),
+var faseBtn = document.querySelector('.controls__button_face-detect'),
+    motionBtn = document.querySelector('.controls__button_motion-detect'),
     popupBtn = document.querySelector('.popup__button'),
     popup= document.querySelector('.popup'),
-    preloader = document.querySelector('.video-preloader'),
-    interface = document.querySelector('.video-interface'),
+    videoInterface = document.querySelector('.video-interface'),
     fallBack = document.querySelector('.video-fallback');
 
 var video = document.querySelector('video'),
@@ -26,8 +24,6 @@ function init() {
 }
 
 function bindEvents() {
-    startBtn.addEventListener('click', _startCapture);
-    pauseBtn.addEventListener('click', _pauseCapture);
     /*faseBtn.addEventListener('click', function () {
         console.log(this);
         if (!this.classList.contains('started')) {
@@ -41,7 +37,7 @@ function bindEvents() {
         }
     });*/
 
-    faseBtn.addEventListener('click', function () {
+    motionBtn.addEventListener('click', function () {
         console.log(this);
         if (!this.classList.contains('started')) {
             this.classList.add('started');
@@ -263,36 +259,27 @@ function createAudio(mediaStream) {
     }
 }
 
-function _onOffFaceDetect() {
-
-}
-
 function _videoOnCanPlay() {
     video.classList.remove('hidden');
 }
 
 function _videOnLoad() {
-    console.log('onload');
-
     video.play();
     draw(video, context);
     popup.classList.add('hidden');
     
     var timerId = setTimeout(function tick() {
         toImage();
-
         timerId = setTimeout(tick, 10000);
     }, 10000);
 }
 
 function _startCapture() {
-    preloader.classList.remove('hidden');
-
     if (navigator.getUserMedia) {
         navigator.mediaDevices.getUserMedia({audio: true, video: true})
             .then(function(mediaStream) {
                 video.srcObject = mediaStream;
-                interface.classList.remove('hidden');
+                videoInterface.classList.remove('hidden');
 
                 createInterface();
 
@@ -311,9 +298,6 @@ function _startCapture() {
     } else {
         console.log("getUserMedia not supported");
     }
-
-    preloader.classList.add('hidden');
-
 }
 
 function _pauseCapture() {
